@@ -7,6 +7,14 @@ Multicast channels in Go.
 [![codecov](https://codecov.io/gh/marcus999/go-multicast/branch/master/graph/badge.svg)](https://codecov.io/gh/marcus999/go-multicast)
 [![Go Report Card](https://goreportcard.com/badge/github.com/marcus999/go-multicast)](https://goreportcard.com/report/github.com/marcus999/go-multicast)
 
+## Status
+
+v0.1.0 :
+- It has been testing and appears to be fully functional
+- No detailed performance tests have benn performed yet
+- It is not use in any production code yet
+
+## Overview
 
 Package `go-multicast` implements a multicast channel for which every input value
 is broadcasted to all subscribers.
