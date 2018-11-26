@@ -3,6 +3,7 @@
 Multicast channels in Go.
 
 [![GoDoc](https://godoc.org/github.com/marcus999/go-multicast?status.svg)](https://godoc.org/github.com/marcus999/go-multicast)
+[![Version](https://img.shields.io/github/tag/marcus999/go-multicast.svg)](https://github.com/marcus999/go-multicast)
 [![Build Status](https://travis-ci.org/marcus999/go-multicast.svg?branch=master)](https://travis-ci.org/marcus999/go-multicast)
 [![codecov](https://codecov.io/gh/marcus999/go-multicast/branch/master/graph/badge.svg)](https://codecov.io/gh/marcus999/go-multicast)
 [![Go Report Card](https://goreportcard.com/badge/github.com/marcus999/go-multicast)](https://goreportcard.com/report/github.com/marcus999/go-multicast)
