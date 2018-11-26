@@ -176,10 +176,10 @@ func (s *Subscription) unsubscribe() {
 	default:
 		close(s.closeCh) // handles concurrent write / close
 	}
+	ch := s.ch
 	s.mu.Unlock()
 
 	// schedule close readCh on writer side
-	ch := s.ch
 	if ch != nil {
 		select {
 		case ch.unsubscribeCh <- s:

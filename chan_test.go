@@ -2,6 +2,7 @@ package multicast_test
 
 import (
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -9,6 +10,10 @@ import (
 	"github.com/marcus999/go-testpredicate"
 	"github.com/marcus999/go-testpredicate/pred"
 )
+
+// ----------------------------------------------------------------------------
+// Tests for constructors
+// ----------------------------------------------------------------------------
 
 func TestNewChan(t *testing.T) {
 	assert := testpredicate.NewAsserter(t)
@@ -24,6 +29,27 @@ func TestNewBufferredChan(t *testing.T) {
 	ch := multicast.NewBufferedChan(10)
 	assert.That(ch, pred.IsNotNil())
 	assert.That(ch.In(), pred.IsNotNil(), "multicast.Chan must have a valid input channel")
+}
+
+// ----------------------------------------------------------------------------
+// Helper functions
+// ----------------------------------------------------------------------------
+
+type AtomicBool struct {
+	i int32
+}
+
+func (b *AtomicBool) Get() bool {
+
+	return atomic.LoadInt32(&b.i) != 0
+}
+
+func (b *AtomicBool) Set(v bool) {
+	var i int32
+	if v {
+		i = 1
+	}
+	atomic.StoreInt32(&b.i, i)
 }
 
 func makeData(start, count int) []interface{} {
@@ -59,6 +85,10 @@ func drainChanN(ch <-chan interface{}, count int) []interface{} {
 	}
 	return result
 }
+
+// ----------------------------------------------------------------------------
+// Tests for channel and subscription operation
+// ----------------------------------------------------------------------------
 
 func TestElementsAreDispatchedToAllSubscribers(t *testing.T) {
 	assert := testpredicate.NewAsserter(t)
@@ -132,11 +162,12 @@ func TestCloseSubscriptionOnLoadedChannel(t *testing.T) {
 	assert := testpredicate.NewAsserter(t)
 
 	ch := multicast.NewChan()
-	stop := false
+	var stop AtomicBool
+
 	go func() {
 		for i := 0; i < 100000; i++ {
 			ch.In() <- i
-			if stop {
+			if stop.Get() {
 				break
 			}
 		}
@@ -148,18 +179,18 @@ func TestCloseSubscriptionOnLoadedChannel(t *testing.T) {
 	s.Close()
 
 	time.Sleep(1 * time.Millisecond)
-	stop = true
+	stop.Set(true)
 
 	assert.That(r, pred.Length(pred.IsEqualTo(100)))
 }
 
 func TestCloseMulticastChanWithActiveSubscriptions(t *testing.T) {
 	ch := multicast.NewChan()
-	stop := false
+	var stop AtomicBool
 	go func() {
 		for i := 0; i < 1000000; i++ {
 			ch.In() <- i
-			if stop {
+			if stop.Get() {
 				break
 			}
 		}
@@ -189,17 +220,17 @@ func TestCloseMulticastChanWithActiveSubscriptions(t *testing.T) {
 	cond.Wait() // Wait for the first subscription to be full
 	mu.Unlock()
 
-	stop = true
+	stop.Set(true)
 	wg.Wait()
 }
 
 func TestCloseMulticasteChanWithActiveSubscriptions(t *testing.T) {
 	ch := multicast.NewChan()
-	stop := false
+	var stop AtomicBool
 	go func() {
 		for i := 0; i < 1000000; i++ {
 			ch.In() <- i
-			if stop {
+			if stop.Get() {
 				break
 			}
 		}
@@ -230,6 +261,6 @@ func TestCloseMulticasteChanWithActiveSubscriptions(t *testing.T) {
 		}()
 	}
 
-	stop = true
+	stop.Set(true)
 	wg.Wait()
 }
