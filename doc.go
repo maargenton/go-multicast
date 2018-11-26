@@ -1,4 +1,4 @@
 /*
-Package multicast implementes a genertic interface{}-based multicast channel
+Package multicast implements a genertic interface{}-based multicast channel
 */
 package multicast

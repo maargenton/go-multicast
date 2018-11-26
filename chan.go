@@ -4,7 +4,7 @@ import (
 	"sync"
 )
 
-// Chan sends every incoming message to each supscription channel
+// Chan sends every incoming message to each subscription channel
 type Chan struct {
 	mu            sync.Mutex       // protects close(in) and closed flag
 	in            chan interface{} // closed when client is donr writing
